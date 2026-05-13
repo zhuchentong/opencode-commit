@@ -10,7 +10,7 @@ export const COMMIT_GUIDE = `## 提交信息格式要求
 
 ### 格式
 \`\`\`
-<type>: <subject> <emoji>
+<type>: <emoji> <subject>
 \`\`\`
 
 ### 类型与对应 emoji
@@ -27,22 +27,22 @@ export const COMMIT_GUIDE = `## 提交信息格式要求
 ### 规则
 1. 提交信息使用中文
 2. subject 简洁总结变更，20 字以内，不加句号
-3. emoji 放在 subject 末尾
+3. emoji 放在 subject 开头
 4. **不要写 body**。除非变更涉及 3 个以上独立模块且 subject 无法涵盖，才用 body 列出关键项（"- " 开头，最多 3 条）
 5. 根据变更选择最合适的 type 和 emoji
 
 ### 示例
 \`\`\`
-feat: 添加用户登录功能 ✨
+feat: ✨ 添加用户登录功能
 \`\`\`
 \`\`\`
-fix: 修复首页白屏问题 🐛
+fix: 🐛 修复首页白屏问题
 \`\`\`
 \`\`\`
-chore: 升级依赖版本 🔧
+chore: 🔧 升级依赖版本
 \`\`\`
 \`\`\`
-refactor: 重构用户模块 ♻️
+refactor: ♻️ 重构用户模块
 - 拆分认证逻辑为独立服务
 - 提取公共权限校验函数
 - 统一错误处理策略

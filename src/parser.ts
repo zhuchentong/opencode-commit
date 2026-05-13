@@ -188,13 +188,13 @@ const parsePrefix = (prefix: string): PrefixParts => {
  * @returns 分离后的描述和可选 emoji
  */
 const parseDescription = (text: string): { description: string; emoji?: string } => {
-  // 尝试匹配 emoji
-  const match = text.match(emojiPattern)
+  // 从描述开头匹配 emoji
+  const match = text.match(new RegExp(`^\\s*(${emojiPattern.source})`, 'u'))
 
   if (match) {
-    // 提取 emoji 并从描述中移除
-    const emoji = match[0]
-    const description = text.replace(emojiPattern, '').trim()
+    // 提取开头 emoji 并从描述中移除
+    const emoji = match[1]
+    const description = text.slice(match[0].length).trim()
     return { description, emoji }
   }
 
