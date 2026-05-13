@@ -261,18 +261,18 @@ export const createDiffTool = ($: BunShell): ToolDefinition => {
       // 默认显示暂存区变更
       const showStaged = args.staged !== false
 
-      // 先检查暂存区是否有内容
-      const statResult = await safeAsync(() => $`git diff --cached --stat`.text())
-      if (statResult.error) {
-        const msg = String(statResult.error.message || statResult.error)
+      // 检查是否有未暂存的变更（工作区 vs 暂存区）
+      const unstagedResult = await safeAsync(() => $`git diff --stat`.text())
+      if (unstagedResult.error) {
+        const msg = String(unstagedResult.error.message || unstagedResult.error)
         if (msg.includes('not a git repository')) {
           return '> 当前目录不是 Git 仓库。'
         }
         return `> 获取 diff 失败：${msg}`
       }
 
-      // 暂存区为空时自动 add 所有变更
-      if (showStaged && !statResult.data.trim()) {
+      // 存在未暂存变更时自动 add 所有变更
+      if (unstagedResult.data?.trim()) {
         await safeAsync(() => $`git add -A`.text())
         context.metadata({ title: '📦 自动暂存变更...' })
       }
