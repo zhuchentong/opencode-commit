@@ -11,10 +11,24 @@ import {
   createValidateTool,
 } from './tools.js'
 
+/**
+ * OpenCode 中文约定式提交插件
+ *
+ * 注册 /commit 命令及一系列 git 操作工具，帮助用户
+ * 按照约定式提交规范生成、验证并提交中文提交信息。
+ *
+ * @param ctx - OpenCode 插件上下文，包含 SDK 客户端、Shell、项目信息等
+ * @returns 插件钩子集合
+ */
 export const OpencodeCommitPlugin: Plugin = async (ctx: PluginInput) => {
+  // 加载项目级配置（opencode-commit.json），不存在则使用默认值
   const commitConfig = await loadConfig(ctx.directory)
 
   return {
+    /**
+     * 配置钩子 - 注册 /commit 斜杠命令
+     * @param cfg - OpenCode 配置对象
+     */
     config: async (cfg) => {
       cfg.command = cfg.command || {}
       cfg.command['commit'] = {
@@ -35,15 +49,18 @@ export const OpencodeCommitPlugin: Plugin = async (ctx: PluginInput) => {
       }
     },
 
+    /**
+     * 工具注册 - 向 OpenCode 注册所有自定义工具
+     */
     tool: {
-      'commit-message-generate': createGenerateTool(ctx.$, commitConfig),
-      'commit-message-validate': createValidateTool(commitConfig),
-      'commit-message-confirm': createConfirmTool(ctx.$, commitConfig),
-      'git-amend': createAmendTool(ctx.$, commitConfig),
-      'git-diff': createDiffTool(ctx.$),
-      'git-log': createLogTool(ctx.$),
-      'git-status': createStatusTool(ctx.$),
-      'git-undo': createUndoTool(ctx.$),
+      'commit-message-generate': createGenerateTool(ctx.$, commitConfig), // 生成提交格式指南
+      'commit-message-validate': createValidateTool(commitConfig), // 验证提交信息格式
+      'commit-message-confirm': createConfirmTool(ctx.$, commitConfig), // 确认并提交
+      'git-amend': createAmendTool(ctx.$, commitConfig), // 修改最近一次提交
+      'git-diff': createDiffTool(ctx.$), // 查看暂存区差异
+      'git-log': createLogTool(ctx.$), // 查看提交历史
+      'git-status': createStatusTool(ctx.$), // 查看工作树状态
+      'git-undo': createUndoTool(ctx.$), // 撤销最近提交
     },
   }
 }
