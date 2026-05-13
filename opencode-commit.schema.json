@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenCode Commit Plugin Configuration",
+  "description": "opencode-commit 插件配置文件",
+  "type": "object",
+  "properties": {
+    "types": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "允许的提交类型",
+      "default": ["feat", "fix", "docs", "style", "refactor", "perf", "test", "chore", "revert"]
+    },
+    "scopes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "description": "按类别分组的作用域白名单（不配置则不限制）"
+    },
+    "maxLength": {
+      "type": "number",
+      "description": "提交信息最大长度",
+      "default": 72
+    }
+  },
+  "additionalProperties": false
+}

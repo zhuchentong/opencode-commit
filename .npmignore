@@ -5,3 +5,4 @@ tsconfig.build.json
 node_modules/
 *.tgz
 bun.lock
+opencode-commit.schema.json
