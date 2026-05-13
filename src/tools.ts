@@ -64,6 +64,22 @@ const commitAndReport = async (
   }
 }
 
+export const createValidateTool = (config: CommitConfig): ToolDefinition => {
+  return tool({
+    description: '验证提交信息是否符合约定式提交格式。在用户确认前调用，验证失败时根据建议修正后重新验证。',
+    args: {
+      message: tool.schema.string().describe('待验证的中文约定式提交信息'),
+    },
+    async execute(args) {
+      const result = safe(() => validateCommitMessage(args.message, config))
+      if (result.error) {
+        return `❌ 验证失败: ${formatValidationError(result.error)}`
+      }
+      return `✅ 验证通过: ${args.message}`
+    },
+  })
+}
+
 export const createGenerateTool = ($: BunShell, config: CommitConfig): ToolDefinition => {
   return tool({
     description: '返回中文约定式提交格式指南。优先读取项目根目录的 COMMITS.md，不存在则使用内置指南。',
