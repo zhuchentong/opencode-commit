@@ -1,10 +1,20 @@
 # opencode-commit
 
-OpenCode plugin.
+OpenCode 插件 - 根据 Git 变更自动生成中文约定式提交信息。
 
-## Installation
+提供 `/commit` 命令，自动收集 git diff、status 和提交历史，结合 AI 生成符合约定式提交规范的中文提交信息，确认后一键提交。
 
-Add to your `opencode.json` (global or per-project):
+## 功能
+
+- 自动收集暂存区的 diff 和上下文信息
+- 支持中文约定式提交格式（feat/fix/docs/style/refactor/perf/test/chore/revert）
+- 自动附加对应的 emoji
+- 交互式确认后再提交
+- 无暂存变更时自动 `git add -A`
+
+## 安装
+
+在 `opencode.json`（全局或项目级）中添加：
 
 ```json
 {
@@ -12,114 +22,55 @@ Add to your `opencode.json` (global or per-project):
 }
 ```
 
-OpenCode will automatically install the plugin on next launch.
+OpenCode 会在下次启动时自动安装。
 
-## Development
+## 使用
+
+在 OpenCode 中输入：
+
+```
+/commit
+```
+
+插件会自动：
+1. 收集当前仓库的 git diff 和最近提交记录
+2. 生成中文约定式提交信息
+3. 展示供你确认
+4. 确认后执行 `git commit`
+
+### 提交信息格式
+
+```
+<type>: <subject> <emoji>
+```
+
+| 类型 | 说明 | Emoji |
+|------|------|-------|
+| feat | 新功能 | ✨ |
+| fix | 修复 bug | 🐛 |
+| docs | 文档更新 | 📝 |
+| style | 代码格式化 | 💄 |
+| refactor | 重构代码 | ♻️ |
+| perf | 性能优化 | ⚡ |
+| test | 测试相关 | ✅ |
+| chore | 构建/依赖更新 | 🔧 |
+| revert | 回滚提交 | ⏪ |
+
+## 开发
 
 ```bash
-# Install dependencies
 bun install
-
-# Run OpenCode with the plugin loaded from source
-bun dev
-
-# Typecheck
-bun typecheck
+bun dev          # 加载插件启动 OpenCode
+bun typecheck    # 类型检查
 ```
 
-### Project Structure
-
-```
-opencode-commit/
-├── src/
-│   └── index.ts      # Plugin entry point with all available hooks
-├── dev.ts            # Development script (runs OpenCode with plugin)
-├── package.json
-├── tsconfig.json
-└── ...
-```
-
-### Plugin Context
-
-Your plugin receives a context object with:
-
-- `client` - OpenCode SDK client for API calls (logging, toasts, etc.)
-- `project` - Current project information
-- `directory` - Current working directory
-- `worktree` - Git worktree path
-- `$` - Bun shell for executing commands
-
-### Available Hooks
-
-See `src/index.ts` for all available hooks with descriptions. Key hooks:
-
-| Hook | Description |
-|------|-------------|
-| `event` | Subscribe to OpenCode events (session.idle, file.edited, etc.) |
-| `chat.message` | Intercept user messages |
-| `chat.params` | Modify LLM parameters (temperature, etc.) |
-| `tool.execute.before` | Modify tool arguments or block execution |
-| `tool.execute.after` | Process tool results |
-| `permission.ask` | Auto-allow/deny permissions |
-| `tool` | Register custom tools |
-
-### Logging
-
-Use `client.app.log()` for structured logging instead of `console.log`:
-
-```typescript
-await ctx.client.app.log({
-  body: {
-    service: 'opencode-commit',
-    level: 'info', // 'debug' | 'info' | 'warn' | 'error'
-    message: 'Something happened',
-    extra: { foo: 'bar' },
-  },
-})
-```
-
-### Custom Tools
-
-```typescript
-import { tool } from '@opencode-ai/plugin'
-
-export const MyPlugin: Plugin = async (ctx) => {
-  return {
-    tool: {
-      mytool: tool({
-        description: 'What this tool does',
-        args: {
-          input: tool.schema.string(),
-        },
-        async execute(args, context) {
-          return `Result: ${args.input}`
-        },
-      }),
-    },
-  }
-}
-```
-
-## Publishing
+## 发布
 
 ```bash
-npm publish
+npm run release
 ```
 
-After publishing, users can install with:
-
-```json
-{
-  "plugin": ["opencode-commit@latest"]
-}
-```
-
-## Resources
-
-- [Plugin Documentation](https://opencode.ai/docs/plugins/)
-- [SDK Reference](https://opencode.ai/docs/sdk/)
-- [Community Plugins](https://opencode.ai/docs/ecosystem/#plugins)
-- [OpenCode Discord](https://opencode.ai/discord)
+此命令会调用 `bumpp`，交互式选择版本号后自动执行：bump version → commit → tag → push → build → `npm publish`。
 
 ## License
 

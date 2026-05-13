@@ -1,0 +1,7 @@
+src/
+scripts/
+tsconfig.json
+tsconfig.build.json
+node_modules/
+*.tgz
+bun.lock

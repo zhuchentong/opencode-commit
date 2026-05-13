@@ -1,14 +1,14 @@
 import type { Config } from '@opencode-ai/sdk'
 import { spawn } from 'bun'
-import { dirname } from 'node:path'
+import { dirname, join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-const scriptDir = dirname(import.meta.path)
+const projectDir = dirname(dirname(import.meta.path))
 
 console.log('Starting OpenCode with plugin loaded from source...')
 console.log('')
 
-const pluginPath = pathToFileURL(scriptDir).href
+const pluginPath = pathToFileURL(join(projectDir, 'src', 'index.ts')).href
 console.log(`Plugin path: ${pluginPath}`)
 
 const config = { plugin: [pluginPath] } satisfies Config

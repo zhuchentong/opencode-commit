@@ -10,6 +10,6 @@
 		"forceConsistentCasingInFileNames": true,
 		"noEmit": true
 	},
-	"include": ["src/**/*", "dev.ts"],
+	"include": ["src/**/*", "scripts/**/*"],
 	"exclude": ["node_modules"]
 }
