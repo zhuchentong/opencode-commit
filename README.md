@@ -14,11 +14,17 @@ OpenCode 插件 - 根据 Git 变更自动生成中文约定式提交信息。
 
 ## 安装
 
-在 `opencode.json`（全局或项目级）中添加：
+使用 CLI 命令安装：
+
+```bash
+opencode plugin @gopowerteam/opencode-commit -g
+```
+
+或者在 `opencode.json`（全局或项目级）中手动添加：
 
 ```json
 {
-  "plugin": ["opencode-commit@latest"]
+  "plugin": ["@gopowerteam/opencode-commit@latest"]
 }
 ```
 
@@ -63,14 +69,6 @@ bun install
 bun dev          # 加载插件启动 OpenCode
 bun typecheck    # 类型检查
 ```
-
-## 发布
-
-```bash
-npm run release
-```
-
-此命令会调用 `bumpp`，交互式选择版本号后自动执行：bump version → commit → tag → push → build → `npm publish`。
 
 ## License
 
