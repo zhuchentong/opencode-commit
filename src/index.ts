@@ -43,7 +43,9 @@ export const OpencodeCommitPlugin: Plugin = async (ctx: PluginInput) => {
           '验证通过后用 question 工具让用户确认：' +
           '1. question 内容为 "确认提交以下信息？\\n\\n<完整提交信息>"；' +
           '2. 设置 custom: true；' +
-          '3. 选项：确认提交、取消。' +
+          '3. 选项：确认提交、重新生成、取消。' +
+          '如果用户选择"重新生成"，则先调用 git-status、git-diff 检测工作区未提交的文件，' +
+          '然后重新生成提交信息并再次验证和确认。' +
           '用户确认后调用 commit-message-confirm 提交。',
         subtask: true,
       }
