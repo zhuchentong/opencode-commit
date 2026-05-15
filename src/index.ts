@@ -6,6 +6,7 @@ import {
   createDiffTool,
   createGenerateTool,
   createLogTool,
+  createPushTool,
   createStatusTool,
   createUndoTool,
   createValidateTool,
@@ -46,7 +47,11 @@ export const OpencodeCommitPlugin: Plugin = async (ctx: PluginInput) => {
           '3. 选项：确认提交、重新生成、取消。' +
           '如果用户选择"重新生成"，则先调用 git-status、git-diff 检测工作区未提交的文件，' +
           '然后重新生成提交信息并再次验证和确认。' +
-          '用户确认后调用 commit-message-confirm 提交。',
+          '用户确认后调用 commit-message-confirm 提交。' +
+          '提交成功后，调用 git remote 检查是否存在远程仓库。' +
+          '如果存在远程仓库（git remote 输出非空），用 question 工具询问用户："提交成功，是否需要执行 git push？"' +
+          '设置 custom: true，选项：执行 push、不需要。' +
+          '用户选择"执行 push"时调用 git-push 工具。',
         subtask: true,
       }
     },
@@ -61,6 +66,7 @@ export const OpencodeCommitPlugin: Plugin = async (ctx: PluginInput) => {
       'git-amend': createAmendTool(ctx.$, commitConfig), // 修改最近一次提交
       'git-diff': createDiffTool(ctx.$), // 查看暂存区差异
       'git-log': createLogTool(ctx.$), // 查看提交历史
+      'git-push': createPushTool(ctx.$), // 推送到远程仓库
       'git-status': createStatusTool(ctx.$), // 查看工作树状态
       'git-undo': createUndoTool(ctx.$), // 撤销最近提交
     },

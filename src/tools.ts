@@ -380,3 +380,44 @@ export const createUndoTool = ($: BunShell): ToolDefinition => {
     },
   })
 }
+
+/**
+ * 创建 git push 工具
+ *
+ * 执行 git push 并处理常见场景：无远程分支、需要 set-upstream 等。
+ *
+ * @param $ - Bun Shell 实例
+ * @returns 工具定义
+ */
+export const createPushTool = ($: BunShell): ToolDefinition => {
+  return tool({
+    description: '将当前分支推送到远程仓库',
+    args: {},
+    async execute(_args, context) {
+      context.metadata({ title: '🚀 推送到远程仓库...' })
+
+      // 检查是否有远程仓库
+      const remoteResult = await safeAsync(() => $`git remote`.text())
+      if (remoteResult.error || !remoteResult.data?.trim()) {
+        return '> 当前仓库没有配置远程仓库，无法推送。'
+      }
+
+      // 执行 push
+      const result = await safeAsync(() => $`git push`.text())
+      if (result.error) {
+        const msg = String(result.error.message || result.error)
+        // 没有上游分支
+        if (msg.includes('upstream') || msg.includes('set-upstream')) {
+          return `> 当前分支没有设置上游分支。请先执行：git push --set-upstream origin <branch-name>`
+        }
+        // 被拒绝（可能需要 pull）
+        if (msg.includes('rejected')) {
+          return `> 推送被拒绝，远程仓库有新的变更。请先执行：git pull --rebase`
+        }
+        return `> 推送失败：${msg}`
+      }
+
+      return `✅ 推送成功！\n\n\`\`\`\n${result.data.trim()}\n\`\`\``
+    },
+  })
+}
